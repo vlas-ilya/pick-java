@@ -112,9 +112,12 @@ public class CopyUtils {
         }
     }
 
-
+    @SuppressWarnings("unchecked")
     static Object copy(Object object, Tree patternForCopy, Tree patternForIgnore) {
         try {
+            if (object == null) {
+                return null;
+            }
             if (patternForIgnore.getNodes().isEmpty() &&
                 !Objects.equals("root", patternForIgnore.getName()) &&
                 Objects.equals(patternForCopy.getName(), patternForIgnore.getName())) {
@@ -151,6 +154,7 @@ public class CopyUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T copy(T object, List<String> fieldsForCopy, List<String> ignoredFields) {
         return (T) copy(object, createPattern(fieldsForCopy), createPattern(ignoredFields));
     }

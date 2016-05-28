@@ -3,6 +3,7 @@ package ru.tease.pick;
 import org.junit.Test;
 import ru.tease.pick.testBeans.Child1;
 import ru.tease.pick.testBeans.ChildSomeClass;
+import ru.tease.pick.testBeans.SomeClass;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,4 +51,32 @@ public class PickTest {
         assertEquals(realResult, result);
     }
 
+    @Test
+    public void copyNullTest() {
+        Child1 realResult = new Pick<>((Child1) null)
+                .add("integer", "someClass.string", "someClass.integers", "someClass.bool1", "strings")
+                .pick();
+
+        assertEquals(realResult, null);
+    }
+
+    @Test
+    public void copyNull2Test() {
+        Child1 realResult = new Pick<>(new Child1())
+                .add("integer", "someClass.string", "someClass.integers", "someClass.bool1", "strings")
+                .pick();
+
+        assertEquals(realResult, new Child1());
+    }
+
+    @Test
+    public void copyNull3Test() {
+        Child1 child1 = new Child1();
+        child1.setSomeClass(new ChildSomeClass());
+        Child1 realResult = new Pick<>(child1)
+                .add("integer", "someClass.string", "someClass.integers", "someClass.bool1", "strings")
+                .pick();
+
+        assertEquals(realResult, child1);
+    }
 }
