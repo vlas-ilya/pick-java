@@ -98,7 +98,8 @@ public class CopyUtilsTest {
         Parent1 realResult = CopyUtils.copy(
                 parent1,
                 Arrays.asList("integer", "someClass.integers", "someClass.string"),
-                Arrays.asList("")
+                Arrays.asList(""),
+                true
         );
 
         assertEquals(realResult, result);
@@ -125,7 +126,8 @@ public class CopyUtilsTest {
         Parent1 realResult = CopyUtils.copy(
                 parent1,
                 Arrays.asList("integer", "someClass"),
-                Arrays.asList("someClass.string")
+                Arrays.asList("someClass.string"),
+                true
         );
 
         assertEquals(realResult, result);
@@ -151,7 +153,8 @@ public class CopyUtilsTest {
         Parent1 realResult = CopyUtils.copy(
                 parent1,
                 Arrays.asList("integer", "someClass"),
-                Arrays.asList("someClass.string", "someClass.integer")
+                Arrays.asList("someClass.string", "someClass.integer"),
+                true
         );
 
         assertEquals(realResult, result);
@@ -183,7 +186,8 @@ public class CopyUtilsTest {
         Parent1 realResult = CopyUtils.copy(
                 child1,
                 Arrays.asList("integer", "someClass.string", "someClass.integers", "someClass.bool1", "strings"),
-                Arrays.asList("")
+                Arrays.asList(""),
+                false
         );
 
         assertEquals(realResult, result);
@@ -224,7 +228,8 @@ public class CopyUtilsTest {
         List<Child1> realResult = CopyUtils.copy(
                 child1,
                 Arrays.asList("integer", "someClass.string", "someClass.integers", "someClass.bool1", "strings"),
-                Arrays.asList("")
+                Arrays.asList(""),
+                true
         );
 
         assertEquals(realResult, result);

@@ -114,7 +114,7 @@ public class CopyUtils {
     }
 
     @SuppressWarnings("unchecked")
-    static Object copy(Object object, Tree patternForCopy, Tree patternForIgnore) {
+    static Object copy(Object object, Tree patternForCopy, Tree patternForIgnore, boolean deepCopy) {
         try {
             if (object == null) {
                 return null;
@@ -127,13 +127,13 @@ public class CopyUtils {
             }
             if (object instanceof List) {
                 return ((List) object).stream()
-                        .map(o -> copy(o, patternForCopy, patternForIgnore))
+                        .map(o -> copy(o, patternForCopy, patternForIgnore, deepCopy))
                         .collect(toList());
             }
 
             if (patternForCopy.getNodes().isEmpty()) {
                 if (patternForIgnore.getNodes().isEmpty()) {
-                    return deepClone(object);
+                    return deepCopy ? deepClone(object) : object;
                 } else {
                     return removeFields(deepClone(object), patternForIgnore);
                 }
@@ -145,7 +145,11 @@ public class CopyUtils {
             patternForCopy.getNodes().stream().forEach(tree -> {
                 Method setter = getSetter(clazz, tree.getName());
                 Method getter = getGetter(clazz, tree.getName());
-                Object result = copy(invoke(getter, object), tree, patternForIgnore.get(tree.getName()).orElse(new Tree("#empty")));
+                Object result = copy(
+                        invoke(getter, object),
+                        tree,
+                        patternForIgnore.get(tree.getName()).orElse(new Tree("#empty")),
+                        deepCopy);
                 invoke(setter, obj, result);
             });
 
@@ -156,7 +160,7 @@ public class CopyUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T copy(T object, List<String> fieldsForCopy, List<String> ignoredFields) {
-        return (T) copy(object, createPattern(fieldsForCopy), createPattern(ignoredFields));
+    public static <T> T copy(T object, List<String> fieldsForCopy, List<String> ignoredFields, boolean deepCopy) {
+        return (T) copy(object, createPattern(fieldsForCopy), createPattern(ignoredFields), deepCopy);
     }
 }

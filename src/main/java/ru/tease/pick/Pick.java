@@ -10,6 +10,8 @@ public class Pick<T> {
 
     private List<String> fieldsForCopy = new ArrayList<>();
     private List<String> ignoredFields = new ArrayList<>();
+    private boolean deepCopy = false;
+
     private T object;
 
     public Pick(T object) {
@@ -17,7 +19,7 @@ public class Pick<T> {
     }
 
     public T pick() {
-        return CopyUtils.copy(object, fieldsForCopy, ignoredFields);
+        return CopyUtils.copy(object, fieldsForCopy, ignoredFields, deepCopy);
     }
 
 
@@ -28,6 +30,11 @@ public class Pick<T> {
 
     public Pick<T> ignore(String ... fields) {
         ignoredFields.addAll(Arrays.asList(fields));
+        return this;
+    }
+
+    public Pick<T> deepCopy(boolean deepCopy) {
+        this.deepCopy = deepCopy;
         return this;
     }
 }
