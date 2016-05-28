@@ -46,6 +46,7 @@ public class CopyUtils {
         try {
             return clazz.getMethod(name, params);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
         }
         return null;
     }
