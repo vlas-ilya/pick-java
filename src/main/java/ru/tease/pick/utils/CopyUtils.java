@@ -42,11 +42,12 @@ public class CopyUtils {
         return tree;
     }
 
-    static Method getMethod(Class clazz, String name, Class<?> ... params) {
+    @SuppressWarnings("unchecked")
+    static Method getMethod(Class clazz, String name, Class<?>... params) {
         try {
             return clazz.getMethod(name, params);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+         /*e.printStackTrace();*/
         }
         return null;
     }
@@ -56,7 +57,10 @@ public class CopyUtils {
         if (method == null) {
             method = getMethod(clazz, "is" + name.substring(0, 1).toUpperCase() + name.substring(1));
             if (method == null) {
-                throw new RuntimeException();
+                method = getMethod(clazz, "get" + name);
+                if (method == null) {
+                    throw new RuntimeException();
+                }
             }
         }
         return method;
@@ -65,12 +69,15 @@ public class CopyUtils {
     static Method getSetter(Class clazz, String name) {
         Method method =  getMethod(clazz, "set" + name.substring(0, 1).toUpperCase() + name.substring(1), getGetter(clazz, name).getReturnType());
         if (method == null) {
-            throw new RuntimeException();
+            method = getMethod(clazz, "set" + name, getGetter(clazz, name).getReturnType());
+            if (method == null) {
+                throw new RuntimeException();
+            }
         }
         return method;
     }
 
-    static Object invoke(Method method, Object object, Object ... params) {
+    static Object invoke(Method method, Object object, Object... params) {
         try {
             return method.invoke(object, params);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -78,7 +85,7 @@ public class CopyUtils {
         }
     }
 
-    public static Object deepClone(Object object) {
+    static Object deepClone(Object object) {
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
@@ -120,8 +127,8 @@ public class CopyUtils {
                 return null;
             }
             if (patternForIgnore.getNodes().isEmpty() &&
-                !Objects.equals("root", patternForIgnore.getName()) &&
-                Objects.equals(patternForCopy.getName(), patternForIgnore.getName())) {
+                    !Objects.equals("root", patternForIgnore.getName()) &&
+                    Objects.equals(patternForCopy.getName(), patternForIgnore.getName())) {
 
                 return null;
             }
@@ -140,7 +147,12 @@ public class CopyUtils {
             }
 
             Class clazz = object.getClass();
-            Object obj = clazz.newInstance();
+
+            if (clazz.isEnum()) {
+                return object;
+            }
+
+            Object obj =  clazz.newInstance();
 
             patternForCopy.getNodes().stream().forEach(tree -> {
                 Method setter = getSetter(clazz, tree.getName());

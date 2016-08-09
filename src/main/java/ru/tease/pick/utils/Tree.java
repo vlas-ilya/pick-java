@@ -34,11 +34,11 @@ public class Tree {
         return this;
     }
 
-    public List<Tree> getNodes() {
+    List<Tree> getNodes() {
         return nodes;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -48,10 +48,7 @@ public class Tree {
         if (o == null || getClass() != o.getClass()) return false;
 
         Tree tree = (Tree) o;
-
-        if (nodes != null ? !nodes.equals(tree.nodes) : tree.nodes != null) return false;
-        return name.equals(tree.name);
-
+        return nodes != null ? nodes.equals(tree.nodes) : tree.nodes == null && name.equals(tree.name);
     }
 
     @Override
